@@ -1,0 +1,168 @@
+@charset "UTF-8";
+
+*{
+    box-sizing: border-box;
+}
+
+.clear {
+    clear: both;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-size: min(12px+1vw);
+    background-image: url(img/bg_02.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
+.generate{
+    margin-bottom: 40px;
+    width: 20vw;
+}
+
+.letter-font{
+    font-family: 'Nunito', sans-serif;
+}
+
+.letter-size{
+    font-size: larger;
+    text-align: center;
+    justify-content: center;
+}
+
+img {
+    width: 100%;
+    height: auto;
+}
+
+button, a {
+    cursor: pointer;
+}
+
+p {
+    font-size: min(12px+1vw);
+}
+
+a {
+    align-items: flex-start;
+    vertical-align: middle;
+    line-height: 3.7vw;
+    text-decoration: none;
+    font-size: min(12px+1vw);
+}
+
+#menu {
+    width: 100%;
+    height: 150px;
+    background-color: #E0E0E0;
+    font-size: 2vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    height: auto;
+    max-width: 380px;
+    flex: auto;
+    margin-block: 0;
+    display: flex;
+    align-items: center;
+}
+
+.logo a {
+    width: auto;
+    height: 100%;
+}
+
+.logo img {
+    margin-block: auto;
+    width: auto;
+    height: 90px;
+}
+
+#nav {
+    width: 70%;
+    margin-inline: 40px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1vw;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#nav a {
+    max-height: 50px;
+    line-height: 1.2vw;
+    color: #000;
+    background-color: #fff;
+    border-radius: 99em;
+    padding: 1vw 2vw;
+    margin-left: 30px;
+
+}
+
+.hot {
+    color: #fff !important;
+    background-color: #ed1c24 !important;
+
+}
+
+.hot:hover {
+    background-color: #cc0c12 !important;
+
+}
+
+#menu a {
+    clear: none;
+}
+
+#menu a:hover {
+    color: #e46054;
+    clear: none;
+}
+
+.hover:hover {
+    opacity: .8;
+}
+
+#banner {
+    top: 0;
+    margin: 0;
+    background-color: #ed1c24;
+    color: #fff;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .bn_t1 {
+    margin: 15px 0 0 0;
+    line-height: 1.6vw;
+    font-size: 1.5vw;
+    font-weight: 900;
+  }
+  
+  .bn_t2 {
+    margin: 0;
+    line-height: 1.1vw;
+    font-size: 1vw;
+    font-weight: 400;
+  }
+  
+  .bn_t2 a {
+    margin: 0;
+    font-weight: bold;
+    color: #000;
+  }
+  
+  .bn_t2 a:hover {
+    color: #fff;
+  }
+
