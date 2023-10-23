@@ -1,61 +1,58 @@
 import { useState } from 'react';
 import './index.css'
 import axios from 'axios';
-import FileSaver from 'file-saver';
-import Mammoth from 'mammoth';
-import PizZip from 'pizzip';
-import Docxtemplater from 'docxtemplater';
+import mammoth from 'mammoth';
 
-  function App() {
+  export const App =()=> {
       const [mainTopic, setMainTopic] = useState('')
       const [intro, setIntro] = useState('');
       const [exercises, setExercises] = useState('');
-      const [image, setImage] = useState('');
       const [questions, setQuestions] = useState('')
       const [generatedContent, setGeneratedContent] = useState('');
-      const [generatedImg, setGeneratedImg] =  useState('')
+
+      const generateWordDocument = async() => {
+        // Convierte el contenido generado a HTML
+         const htmlContent = `<html><body>${generatedContent}</body></html>`;
       
-      async function generateWord() {
-        try {
-          const template = 'src/doc/Membrete.docx';
-          const response = await axios.get({ responseType: 'arraybuffer' });
-          const zip = new PizZip(response.data);
-          const doc = new Docxtemplater().loadZip(zip);
-
-          doc.setData({
-            contenido: generateWord,
+        // Define la plantilla de Word
+        const template = `
+          <w:document xmlns:w="urn:schemas-microsoft-com:office:word">
+            <w:body>
+              <w:p>
+                <w:r>
+                  <w:t>${mainTopic}</w:t>
+                </w:r>
+              </w:p>
+              <w:p>
+                <w:r>
+                  <w:t>${htmlContent}</w:t>
+                </w:r>
+              </w:p>
+            </w:body>
+          </w:document>
+        `;
+      
+        // Convierte la plantilla a un documento de Word (.docx)
+        mammoth.convertToHtml(template)
+          .then((result) => {
+            // `result.value` contiene el contenido HTML
+            const wordDocument = result.value;
+            
+            // Descargar el documento de Word
+            const blob = new Blob([wordDocument], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${mainTopic}.docx`;
+            a.click();
+          })
+          .catch((error) => {
+            console.error('Error al generar el documento de Word:', error);
           });
-
-          doc.render();
-
-          // Generar el documento de Word
-          const blob = doc.getZip().generate({
-            type: 'blob',
-            mimeType:
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          });
-
-          // Descargar el archivo
-          FileSaver.saveAs(blob, `${mainTopic}.docx`);
-        } catch (error) {
-          console.error('Error al generar el documento Word:', error);
-        }
       };
 
       const handleGenerate = async () => {
-        try {
-
-          const responseImage = await axios.post('https://api.openai.com/v1/images/generations',{
-            prompt: `React Native`,
-            n: 1,
-            size: "256x256",
-          }, {
-            headers: {
-              'Authorization': 'Bearer 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',
-            },
-          });
-          
-
+        try {   
           const response = await axios.post('https://api.openai.com/v1/engines/text-davinci-003/completions', {
             prompt: `Generar un documento Word con tema principal de ${mainTopic} empezando con una ${intro} luego genera ${exercises} ejercicios practicos y por ultimo
             una bateria de preguntas de ${questions} preguntas variadas cortas, por ejemplo de seleccion multiple o respuesta directa y ordena el texto de forma que sea
@@ -63,18 +60,18 @@ import Docxtemplater from 'docxtemplater';
             max_tokens: 3000, // Número máximo de tokens en la respuesta generada
           }, {
             headers: {
-              'Authorization': 'Bearer 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',
+              'Authorization': 'Bearer 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',
             },
           });
 
           const generatedContent = response.data.choices[0].text;
-          const generatedImg = responseImage.data.data[0].url;
           setGeneratedContent(generatedContent);
-          setGeneratedImg(generatedImg)
         } catch (error) {
           console.error('Error al generar el contenido:', error);
         }
       };
+
+      console.log(generatedContent)
     return (
       <>
 
@@ -157,10 +154,9 @@ import Docxtemplater from 'docxtemplater';
                 <label className='letter-font' htmlFor="">Min: 10      Max: 15</label>
               </div>
               {generatedContent && (
-          <div className="generated-content">
-            <h2>Contenido Generado:</h2>
-            {generatedContent}
-            <button onClick={generateWord}>descargar</button>
+          <div className="generated-content">           
+            <button onClick={generateWordDocument} className='letter-font position-absolute bottom-0 start-50 translate-middle-x generate btn btn-danger'>
+              Descargar</button>
             {/* Puedes agregar lógica para descargar el contendido como un archivo Word aquí */}
           </div>
         )}
