@@ -14,9 +14,11 @@
     "docxtemplater": "^3.40.2",
     "file-saver": "^2.0.5",
     "mammoth": "^1.6.0",
+    "officegen": "^0.6.5",
     "openai": "^4.12.4",
     "pizzip": "^3.1.4",
     "react": "^18.2.0",
+    "react-doc-viewer": "^0.1.5",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
