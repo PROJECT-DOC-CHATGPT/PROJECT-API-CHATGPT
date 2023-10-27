@@ -257,3 +257,11 @@ i {
     color: rgba(255, 255, 255, .5);
     margin-bottom: 25px;
 }
+
+.generated-content{    
+    text-align: center;
+}
+
+.gen{
+    display: inline-block;
+}

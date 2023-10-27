@@ -251,10 +251,11 @@ export const App = () => {
       </div>
       {generatedQuestions && (
         <div className="generated-content">
-          <h1 className='descargatitulo'>↑ descargar contenido ↑</h1>
-          <button onClick={generateDocument} className=' sombra letter-font position-absolute bottom-0 start-50 translate-middle-x generate btn btn-descargar btn-danger'>
-            Descargar</button>
-          {/* Puedes agregar lógica para descargar el contendido como un archivo Word aquí */}
+          <div className='gen'>
+            <button onClick={generateDocument} className=' sombra letter-font generate btn btn-descargar btn-danger'>
+              Descargar</button>
+            <h1 className='descargatitulo'>↑ descargar contenido ↑</h1>
+          </div>
         </div>
       )}
 
