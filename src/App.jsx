@@ -23,7 +23,7 @@ export const App = () => {
 
   const generateDocument = () => {
     loadFile(
-      'PROJECT-API-CHATGPT/src/Membrete.docx',
+      'https://main--inspiring-beijinho-32558e.netlify.app/PROJECT-API-CHATGPT/src/Membrete.docx',
       function (error, content) {
         if (error) {
           throw error;
