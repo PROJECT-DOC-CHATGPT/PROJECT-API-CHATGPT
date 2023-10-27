@@ -1,77 +1,153 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './index.css'
 import axios from 'axios';
-import mammoth from 'mammoth';
+import Docxtemplater from 'docxtemplater';
+import PizZip from 'pizzip';
+import PizZipUtils from 'pizzip/utils/index.js';
+import { saveAs } from 'file-saver';
+import DocViewer, { DocViewerRenderers } from 'react-doc-viewer';
+
+  function loadFile(url, callback) {
+    PizZipUtils.getBinaryContent(url, callback);
+  }
 
   export const App =()=> {
       const [mainTopic, setMainTopic] = useState('')
       const [intro, setIntro] = useState('');
+      const [generatedIntro, setGeneratedIntro] = useState('')
       const [exercises, setExercises] = useState('');
+      const [generatedExercises, setGeneratedExercises] = useState('')
       const [questions, setQuestions] = useState('')
-      const [generatedContent, setGeneratedContent] = useState('');
+      const [generatedQuestions, setGeneratedQuestions] = useState('')
+  
 
-      const generateWordDocument = async() => {
-        // Convierte el contenido generado a HTML
-         const htmlContent = `<html><body>${generatedContent}</body></html>`;
-      
-        // Define la plantilla de Word
-        const template = `
-          <w:document xmlns:w="urn:schemas-microsoft-com:office:word">
-            <w:body>
-              <w:p>
-                <w:r>
-                  <w:t>${mainTopic}</w:t>
-                </w:r>
-              </w:p>
-              <w:p>
-                <w:r>
-                  <w:t>${htmlContent}</w:t>
-                </w:r>
-              </w:p>
-            </w:body>
-          </w:document>
-        `;
-      
-        // Convierte la plantilla a un documento de Word (.docx)
-        mammoth.convertToHtml(template)
-          .then((result) => {
-            // `result.value` contiene el contenido HTML
-            const wordDocument = result.value;
-            
-            // Descargar el documento de Word
-            const blob = new Blob([wordDocument], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${mainTopic}.docx`;
-            a.click();
-          })
-          .catch((error) => {
-            console.error('Error al generar el documento de Word:', error);
-          });
+      const key = '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'
+
+      const generateDocument = () => {
+        loadFile(
+          'src/Membrete.docx',
+          function (error, content) {
+            if (error) {
+              throw error;
+            }
+            var zip = new PizZip(content);
+            var doc = new Docxtemplater(zip, {
+              paragraphLoop: true,
+              linebreaks: true,
+            });
+            doc.setData({
+              mainTopic: `${mainTopic}`,
+              intro: `${intro}`,
+              generatedIntro: `${generatedIntro}`,
+              generatedExercises: `${generatedExercises}`,
+              generatedQuestions: `${generatedQuestions}`
+            });
+            try {
+              // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
+              doc.render();
+            } catch (error) {
+              // The error thrown here contains additional information when logged with JSON.stringify (it contains a properties object containing all suberrors).
+              function replaceErrors(key, value) {
+                if (value instanceof Error) {
+                  return Object.getOwnPropertyNames(value).reduce(function (
+                    error,
+                    key
+                  ) {
+                    error[key] = value[key];
+                    return error;
+                  },
+                  {});
+                }
+                return value;
+              }
+              console.log(JSON.stringify({ error: error }, replaceErrors));
+  
+              if (error.properties && error.properties.errors instanceof Array) {
+                const errorMessages = error.properties.errors
+                  .map(function (error) {
+                    return error.properties.explanation;
+                  })
+                  .join('\n');
+                console.log('errorMessages', errorMessages);
+                // errorMessages is a humanly readable message looking like this :
+                // 'The tag beginning with "foobar" is unopened'
+              }
+              throw error;
+            }
+            var out = doc.getZip().generate({
+              type: 'blob',
+              mimeType:
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            }); //Output the document using Data-URI
+            saveAs(out, `${mainTopic}.docx`);
+          }
+        );
       };
 
-      const handleGenerate = async () => {
+      const generateIntro = async () => {
         try {   
           const response = await axios.post('https://api.openai.com/v1/engines/text-davinci-003/completions', {
-            prompt: `Generar un documento Word con tema principal de ${mainTopic} empezando con una ${intro} luego genera ${exercises} ejercicios practicos y por ultimo
-            una bateria de preguntas de ${questions} preguntas variadas cortas, por ejemplo de seleccion multiple o respuesta directa y ordena el texto de forma que sea
-            facil para la lectura`,
+            prompt: `Generame una ${intro} del tema ${mainTopic}, facil para la lectura y para un documento word`,
             max_tokens: 3000, // Número máximo de tokens en la respuesta generada
           }, {
             headers: {
-              'Authorization': 'Bearer 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',
+              'Authorization': `Bearer ${key}`,
             },
           });
 
-          const generatedContent = response.data.choices[0].text;
-          setGeneratedContent(generatedContent);
+          const generatedIntro = response.data.choices[0].text;
+          setGeneratedIntro(generatedIntro);
         } catch (error) {
           console.error('Error al generar el contenido:', error);
         }
       };
 
-      console.log(generatedContent)
+      const generateExercises = async () => {
+        try {   
+          const response = await axios.post('https://api.openai.com/v1/engines/text-davinci-003/completions', {
+            prompt: `Generame ${exercises} ejercicios practicos del tema ${mainTopic}, facil para la lectura y para un formato word, solo necesito los ejercicios`,
+            max_tokens: 3000, // Número máximo de tokens en la respuesta generada
+          }, {
+            headers: {
+              'Authorization': `Bearer ${key}`,
+            },
+          });
+
+          const generatedExercises = response.data.choices[0].text;
+          setGeneratedExercises(generatedExercises);
+        } catch (error) {
+          console.error('Error al generar el contenido:', error);
+        }
+      };
+
+      const generateQuestions = async () => {
+        try {   
+          const response = await axios.post('https://api.openai.com/v1/engines/text-davinci-003/completions', {
+            prompt: `Necesito una bateria de preguntas que contenga un total de ${questions} del tema ${mainTopic}, necesito que las preguntas sean variadas,
+            por ejemplo preguntas de opcion multiple, respuesta directa o verdadero o falso, respondeme solo con las preguntas`,
+            max_tokens: 3000, // Número máximo de tokens en la respuesta generada
+          }, {
+            headers: {
+              'Authorization': `Bearer ${key}`,
+            },
+          });
+
+          const generatedQuestions = response.data.choices[0].text;
+          setGeneratedQuestions(generatedQuestions);
+        } catch (error) {
+          console.error('Error al generar el contenido:', error);
+        }
+      };
+
+      const handleGenerate = async()=>{
+        await generateIntro();
+        await new Promise((resolve) => setTimeout(resolve, 10000))
+        await generateExercises();
+        await new Promise((resolve) => setTimeout(resolve, 10000))
+        await generateQuestions()
+        await new Promise((resolve) => setTimeout(resolve, 10000))
+      }
+      
     return (
       <>
 
@@ -121,13 +197,6 @@ import mammoth from 'mammoth';
               <br />
               <div>
                 <br />
-                <label className='letter-font' htmlFor="">¿Que ejemplo ilustrativo deseas?</label> <br />
-                <select className='form-select' onChange={({target: {value}}) => setImage(value)}>
-                  <option className='letter-font' value="">Elije una opcion</option>
-                  <option className='letter-font' value="">Diagrama de flujo</option>
-                  <option className='letter-font' value="">Mapa mental</option>
-                  <option className='letter-font' value="">Mapa conceptual</option>
-                </select>
               </div>
             </div>
             <div className="col">        
@@ -153,9 +222,9 @@ import mammoth from 'mammoth';
                 <input type="number" onChange={({target: {value}}) => setQuestions(value)} className='letter-font form-control' placeholder='numero de preguntas ...' />
                 <label className='letter-font' htmlFor="">Min: 10      Max: 15</label>
               </div>
-              {generatedContent && (
+              {generatedQuestions && (
           <div className="generated-content">           
-            <button onClick={generateWordDocument} className='letter-font position-absolute bottom-0 start-50 translate-middle-x generate btn btn-danger'>
+            <button onClick={generateDocument} className='letter-font position-absolute bottom-0 start-50 translate-middle-x generate btn btn-danger'>
               Descargar</button>
             {/* Puedes agregar lógica para descargar el contendido como un archivo Word aquí */}
           </div>
