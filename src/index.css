@@ -171,7 +171,6 @@ footer{
     background: url(./img/curva_01.svg) ,linear-gradient(0deg, rgba(237,28,36,1) 54%, rgba(255,255,255,0) 54%);
     background-repeat: no-repeat;
     background-size: contain;
-    height: 80vh;
     padding: 0 10%;
     padding-top: 25vh;
     text-align: center;
@@ -256,4 +255,29 @@ i {
     font-size: 1.4vw;
     color: rgba(255, 255, 255, .5);
     margin-bottom: 25px;
+}
+
+
+.btn-descargar{
+    margin-top: 100%;
+}
+
+.texto{
+    margin: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.descargatitulo{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10%;
+}
+
+.sombra{
+    box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.2);
 }

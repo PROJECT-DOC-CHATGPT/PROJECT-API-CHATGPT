@@ -21,7 +21,7 @@ import DocViewer, { DocViewerRenderers } from 'react-doc-viewer';
       const [generatedQuestions, setGeneratedQuestions] = useState('')
   
 
-      const key = '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'
+      const key = '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'
 
       const generateDocument = () => {
         loadFile(
@@ -186,8 +186,8 @@ import DocViewer, { DocViewerRenderers } from 'react-doc-viewer';
             <div className="col">
               <br />
               <div>
-                <label className='letter-font' htmlFor="">¿Que deseas primero?</label> <br />
-                <select onChange={({target: {value}}) => setIntro(value)} className='form-select'>
+                <label className='  letter-font' htmlFor="">¿Que deseas primero?</label> <br />
+                <select onChange={({target: {value}}) => setIntro(value)} className=' sombra form-select'>
                   <option className='letter-font' value="">Elije una opcion</option>
                   <option className='letter-font' value="introduccion">Introduccion</option>
                   <option className='letter-font' value="resumen">Resumen</option>
@@ -200,14 +200,14 @@ import DocViewer, { DocViewerRenderers } from 'react-doc-viewer';
               </div>
             </div>
             <div className="col">        
-              <input type="text" onChange={({target: {value}}) => setMainTopic(value)} className='letter-font form-control' placeholder='Escribe tu tema ...' /> <br />
-              <button type="button" onClick={handleGenerate} className="letter-font position-absolute bottom-0 start-50 translate-middle-x generate btn btn-danger">Generar</button>
+              <input type="text" onChange={({target: {value}}) => setMainTopic(value)} className=' sombra letter-font form-control' placeholder='Escribe tu tema ...' /> <br />
+              <button type="button" onClick={handleGenerate} className="letter-font sombra position-absolute bottom-0 start-50 translate-middle-x generate btn btn-danger">Generar</button>
             </div>
             
             <div className="col">
             <br />
             <label className='letter-font' htmlFor="">¿Cuantos ejercicios practicos desea?</label> <br />
-              <select className='form-select'onChange={({target: {value}}) => setExercises(value)}>
+              <select className=' sombra form-select'onChange={({target: {value}}) => setExercises(value)}>
                 <option className='letter-font' value="">Elije una opcion</option>
                 <option className='letter-font' value="1">1</option>
                 <option className='letter-font' value="2">2</option>
@@ -219,19 +219,20 @@ import DocViewer, { DocViewerRenderers } from 'react-doc-viewer';
               <div>
                 <label className='letter-font' htmlFor="">Bateria de Preguntas:</label> <br />            
                 <label className='letter-font' htmlFor="">¿Cuantas preguntas necesitas?</label> <br />
-                <input type="number" onChange={({target: {value}}) => setQuestions(value)} className='letter-font form-control' placeholder='numero de preguntas ...' />
-                <label className='letter-font' htmlFor="">Min: 10      Max: 15</label>
+                <input type="number" onChange={({target: {value}}) => setQuestions(value)} className='letter-font sombra form-control' placeholder='numero de preguntas ...' />
               </div>
+            </div>
+          </div>
+        </div>
               {generatedQuestions && (
-          <div className="generated-content">           
-            <button onClick={generateDocument} className='letter-font position-absolute bottom-0 start-50 translate-middle-x generate btn btn-danger'>
+          <div className="generated-content">   
+                <h1 className='descargatitulo'>↓ descargar contenido ↓</h1>
+            <button onClick={generateDocument} className= ' sombra letter-font position-absolute bottom-0 start-50 translate-middle-x generate btn btn-descargar btn-danger'>
               Descargar</button>
             {/* Puedes agregar lógica para descargar el contendido como un archivo Word aquí */}
           </div>
         )}
-            </div>
-          </div>
-        </div>
+        
         <footer>
         <figure className="logo_foot">
               <img src="" />
@@ -285,5 +286,3 @@ import DocViewer, { DocViewerRenderers } from 'react-doc-viewer';
       </> 
     )
   }
-
-  export default App
