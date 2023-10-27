@@ -23,7 +23,7 @@ export const App = () => {
 
   const generateDocument = () => {
     loadFile(
-      'src/Membrete.docx',
+      'PROJECT-API-CHATGPT/src/Membrete.docx',
       function (error, content) {
         if (error) {
           throw error;
